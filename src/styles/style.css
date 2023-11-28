@@ -64,7 +64,7 @@ body, h1, h2, h3, p, ul, li {
   }
   
   input {
-    width: 100%;
+    width: 20%;
     padding: 10px;
     margin-bottom: 15px;
   }
@@ -88,4 +88,44 @@ body, h1, h2, h3, p, ul, li {
     bottom: 0;
     width: 100%;
   }
+  
+  .budget-table {
+    display: flex;
+    flex-direction: column;
+    width: 50rem;
+    margin: 0 3rem 0 3rem;
+  }
+  
+  
+  .table-row {
+    display: flex;
+    border-bottom: 1px solid #ccc;
+  }
+  
+  .header {
+    font-weight: bold;
+  }
+  
+  .table-cell {
+    flex: 1;
+    padding: 8px;
+  }
+  nav ul {
+    list-style: none; /* Remove default bullet points */
+    display: flex;
+    padding: 0;
+  }
+  
+  nav li {
+    margin-right: 10px; /* Adjust spacing between buttons */
+  }
+  
+  nav button {
+    cursor: pointer;
+    padding: 8px 16px; /* Adjust button padding */
+    font-size: 16px; /* Adjust button font size */
+  }
+  
+
+  
   

@@ -1,33 +1,41 @@
 import React, { useState, useEffect } from 'react';
 import apiService from '../services/apiService';
 
-const BudgetList = ({token}) => {
+const BudgetList = ({ token }) => {
   const [budgets, setBudgets] = useState([]);
   const [selectedMonth, setSelectedMonth] = useState('');
+  const [loading, setLoading] = useState(true);
+  const [capacityData, setCapacityData] = useState([]);
 
   useEffect(() => {
     const fetchBudgets = async () => {
       try {
-        console.log('Token in budgetlist:', token);  // Log the token here
         const headers = {
-          Authorization: `Bearer ${token}`, // Ensure you are accessing the correct property of the token object
+          Authorization: 'Bearer ' + token,
         };
-  
-        console.log('Request headers:', headers);
-  
-        const response = await apiService.get('/budgets/getAllBudgets', { headers });
-        // ... rest of the code
+
+        const endpoint = selectedMonth
+          ? `/budgets/getAllBudgets/${selectedMonth}`
+          : '/budgets/getAllBudgets';
+
+        const capacityEndpoint = '/budgets/capacity';
+
+        const [response, capacityResponse] = await Promise.all([
+          apiService.get(endpoint, token, { params: { month: parseInt(selectedMonth, 10) } }),
+          apiService.get(capacityEndpoint, token),
+        ]);
+
+        setBudgets(response.data);
+        setCapacityData(capacityResponse.data);
+        setLoading(false);
       } catch (error) {
         console.error('Error fetching budgets', error);
+        setLoading(false);
       }
     };
-  
+
     fetchBudgets();
-  }, [token]); // Include 'token' in the dependency array to trigger the effect when the token changes
-  
-  
-  //   fetchBudgets();
-  // }, [selectedMonth, token]);
+  }, [token, selectedMonth]);
 
   const handleMonthChange = (event) => {
     setSelectedMonth(event.target.value);
@@ -56,11 +64,39 @@ const BudgetList = ({token}) => {
         </select>
       </label>
 
-      <ul>
-        {budgets.map((budget) => (
-          <li key={budget.id}>{budget.name}</li>
-        ))}
-      </ul>
+      {!loading ? (
+        budgets && budgets.length > 0 ? (
+          <div className="budget-table">
+            <div className="table-row header">
+              <div className="table-cell">Budget Name</div>
+              <div className="table-cell">Budget Number</div>
+              <div className="table-cell">Total Capacity</div>
+              <div className="table-cell">Remaining Balance</div>
+            </div>
+            {budgets.map((budget) => {
+              const capacityForBudget = capacityData.find(capacityItem => capacityItem.budgetname === budget.budgetname);
+
+              const budgetNumber = budget.budgetnumber || 0;
+              const capacityNumber = capacityForBudget ? capacityForBudget.budgetnumber || 0 : 0;
+
+              const remainingBalance = Math.max(0, capacityNumber - budgetNumber);
+
+              return (
+                <div className="table-row" key={budget.id}>
+                  <div className="table-cell">{budget.budgetname}</div>
+                  <div className="table-cell">{budgetNumber}</div>
+                  <div className="table-cell">{capacityNumber}</div>
+                  <div className="table-cell">{remainingBalance}</div>
+                </div>
+              );
+            })}
+          </div>
+        ) : (
+          <p>No budget data available.</p>
+        )
+      ) : (
+        <p>Loading...</p>
+      )}
     </div>
   );
 };

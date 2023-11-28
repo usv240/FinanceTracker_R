@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Route, Routes, Link, Navigate } from 'react-router-dom';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { AuthProvider } from './components/Auth/AuthContext';
 import Login from './components/Auth/Login';
 import Signup from './components/Auth/Signup';
 import Dashboard from './components/Dashboard/Dashboard';
@@ -62,31 +63,31 @@ const App = () => {
 
   return (
     <Router>
-      <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/login" element={<Login onLogin={handleLogin} />} />
-        <Route path="/signup" element={<Signup />} />
-        <Route
-          path="/dashboard"
-          element={isLoggedIn ? <Dashboard token={token} /> : <Navigate to="/login" />}
+      <AuthProvider>
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/login" element={<Login onLogin={handleLogin} />} />
+          <Route path="/signup" element={<Signup />} />
+          <Route
+            path="/dashboard"
+            element={isLoggedIn ? <Dashboard token={token} /> : <Navigate to="/login" />}
+          />
+          {isLoggedIn && (
+            <>
+              <Route path="/dashboard/budget-list" element={<BudgetList />} />
+              <Route path="/dashboard/budget-chart" element={<BudgetChart />} />
+              <Route path="/dashboard/configure-budget" element={<ConfigureBudget />} />
+              <Route path="/dashboard/add-budget" element={<AddBudget token={token} />} />
+            </>
+          )}
+        </Routes>
+        <ToastContainer />
+        <TokenRefreshModal
+          isOpen={isTokenRefreshModalOpen}
+          onRefresh={handleRefreshToken}
+          onClose={() => setTokenRefreshModalOpen(false)}
         />
-        {isLoggedIn && (
-          <>
-            <Route path="/dashboard/budget-list" element={<BudgetList />} />
-            <Route path="/dashboard/budget-chart" element={<BudgetChart />} />
-            <Route path="/dashboard/configure-budget" element={<ConfigureBudget />} />
-            <Route path="/dashboard/add-budget" element={<AddBudget token={token} />} />
-          </>
-        )}
-      </Routes>
-      {/* Add ToastContainer outside of Routes */}
-      <ToastContainer />
-      {/* Refresh token modal */}
-      <TokenRefreshModal
-        isOpen={isTokenRefreshModalOpen}
-        onRefresh={handleRefreshToken}
-        onClose={() => setTokenRefreshModalOpen(false)}
-      />
+      </AuthProvider>
     </Router>
   );
 };

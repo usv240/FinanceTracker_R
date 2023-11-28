@@ -4,8 +4,11 @@ import AddBudget from './AddBudget';
 import BudgetList from './BudgetList';
 import BudgetChart from './BudgetChart';
 import AddBudgetCapacity from '../AddBudgetCapacity';
+import { useAuth } from '../Auth/AuthContext'; // Import useAuth
 
-const Dashboard = ({ token, onLogout, username }) => {
+const Dashboard = ({ token, username }) => {
+  const { logout } = useAuth(); // Use the logout function from the context
+
   const [showAddBudget, setShowAddBudget] = useState(false);
   const [showBudgetList, setShowBudgetList] = useState(false);
   const [showBudgetChart, setShowBudgetChart] = useState(false);
@@ -43,38 +46,43 @@ const Dashboard = ({ token, onLogout, username }) => {
     setShowAddBudgetCapacity(true);
   };
 
+  const handleLogout = () => {
+    console.log('User logged out!');
+    logout(); // Call the logout function
+  };
+
   const handleAddBudgetCapacity = async (data) => {
     try {
       const apiUrl = 'http://localhost:5000/api/budgets/capacity';
-  
+
       data.username = username;
-  
+
       const response = await fetch(apiUrl, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          Authorization: `Bearer ${token.token}`,
+          Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify(data),
       });
-  
+
       console.log('apiUrl', apiUrl);
       console.log('response from dashboard', response);
-  
+
       // Log headers and request payload for debugging
       console.log('Request Headers:', response.headers);
       console.log('Request Payload:', JSON.stringify(data));
-  
+
       if (response.ok) {
         const responseData = await response.json();
         console.log('Budget capacity added successfully:', responseData);
         return { success: true, message: 'Budget capacity added successfully', responseData };
       } else {
         console.error('Failed to add budget capacity:', response.statusText);
-  
+
         const errorData = await response.json();
         console.error('Error Data:', errorData);
-  
+
         throw new Error('Failed to add budget capacity');
       }
     } catch (error) {
@@ -82,15 +90,13 @@ const Dashboard = ({ token, onLogout, username }) => {
       throw error;
     }
   };
-  
-  console.log('Current Token:', token);
 
   return (
     <div>
       <h2>Dashboard</h2>
       <p>View and manage your budgets here.</p>
 
-      <button onClick={onLogout}>Logout</button>
+      <button onClick={handleLogout}>Logout</button>
 
       <nav>
         <ul>
@@ -110,12 +116,9 @@ const Dashboard = ({ token, onLogout, username }) => {
       </nav>
 
       {showAddBudget && <AddBudget token={token} />}
-{showBudgetList && <BudgetList token={token} />}
-{showBudgetChart && <BudgetChart token={token} />}
-{showAddBudgetCapacity && <AddBudgetCapacity token={token} onAddBudgetCapacity={handleAddBudgetCapacity} username={username} />}
-
-
-      {/* Add more content or components as needed */}
+      {showBudgetList && <BudgetList token={token} />}
+      {showBudgetChart && <BudgetChart token={token} />}
+      {showAddBudgetCapacity && <AddBudgetCapacity token={token.token} onAddBudgetCapacity={handleAddBudgetCapacity} username={username} />}
     </div>
   );
 };
