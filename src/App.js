@@ -12,21 +12,25 @@ import BudgetChart from './components/Dashboard/BudgetChart';
 import ConfigureBudget from './components/Dashboard/ConfigureBudget';
 import AddBudget from './components/Dashboard/AddBudget';
 import authService from './components/services/authService';
-import TokenRefreshModal from './components/TokenRefreshModal';
+//import TokenRefreshModal from './components/TokenRefreshHandler';
 import './styles/style.css';
 
-const Home = () => (
-  <div>
-    <h1>Welcome to the Budget App</h1>
-    <h2>Your personalized budget management solution.</h2>
-    <Link to="/login">
-      <button>Login</button>
-    </Link>
-    <Link to="/signup">
-      <button>Signup</button>
-    </Link>
-  </div>
-);
+const Home = () => {
+  return (
+    <div className="home-container">
+      <h1 className="welcome-message">Welcome to the Budget App</h1>
+      <h2>Your personalized budget management solution.</h2>
+      <div className="home-button-container">
+        <Link to="/login" className="home-button">
+          Login
+        </Link>
+        <Link to="/signup" className="home-button">
+          Signup
+        </Link>
+      </div>
+    </div>
+  );
+};
 
 const App = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -62,6 +66,7 @@ const App = () => {
   };
 
   return (
+    
     <Router>
       <AuthProvider>
         <Routes>
@@ -81,12 +86,7 @@ const App = () => {
             </>
           )}
         </Routes>
-        <ToastContainer />
-        <TokenRefreshModal
-          isOpen={isTokenRefreshModalOpen}
-          onRefresh={handleRefreshToken}
-          onClose={() => setTokenRefreshModalOpen(false)}
-        />
+        
       </AuthProvider>
     </Router>
   );

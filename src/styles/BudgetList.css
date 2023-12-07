@@ -1,0 +1,53 @@
+
+/* General styling for the component container */
+.budget-list-container {
+    margin-top: 20px;
+  }
+  
+  /* Styling for the header */
+  .list-header {
+    color: #333;
+  }
+  
+  /* Styling for the select dropdown */
+  .select-dropdown {
+    margin-left: 10px;
+    padding: 5px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+  }
+  
+  /* Styling for the budget table container */
+  .budget-table {
+    width: 100%;
+    margin-top: 20px;
+    border-collapse: collapse;
+  }
+  
+  /* Styling for the header row */
+  .table-row.header {
+    background-color: #4caf50;
+    color: white;
+  }
+  
+  /* Styling for table cells */
+  .table-cell {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: left;
+  }
+  
+  /* Styling for the remaining balance cell */
+  .table-cell.remaining-balance {
+    color: #ff6384;
+  }
+  
+  /* Styling for loading and no data messages */
+  .loading-message,
+  .no-data-message {
+    margin-top: 20px;
+    text-align: center;
+    font-size: 1.2rem;
+    color: #333;
+  }
+  

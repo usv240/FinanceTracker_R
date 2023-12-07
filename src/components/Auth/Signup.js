@@ -1,52 +1,81 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import authService from '../services/authService';
+import '../../styles/signup.css';
 
 const Signup = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [fullName, setFullName] = useState('');
+  const [signupStatus, setSignupStatus] = useState(null);
+
+  useEffect(() => {
+    const closeDialog = () => {
+      // Reset signup status after a delay
+      setTimeout(() => setSignupStatus(null), 2000);
+    };
+
+    if (signupStatus === 'success') {
+      closeDialog();
+    } else if (signupStatus === 'failed') {
+      closeDialog();
+    }
+  }, [signupStatus]);
 
   const handleSignup = async (e) => {
-    e.preventDefault(); // Prevent the default form submission
+    e.preventDefault();
 
     try {
-      // Call the signup service
       await authService.signup(username, password, fullName);
-
-      // Display a success message in a dialog box
-      window.alert('Signup successful!');
-
-      // Optionally, redirect to login page or perform other actions upon successful signup
+      setSignupStatus('success');
     } catch (error) {
       console.error('Signup failed', error);
-
-      // Display an error message in a dialog box
-      window.alert('Signup failed. Please try again.');
-
-      // Handle signup failure, e.g., show an error message to the user
+      setSignupStatus('failed');
     }
   };
 
   return (
-    <div>
-      <h2>Sign Up</h2>
-      <form onSubmit={handleSignup}>
-        <label>
+    <div className="signup-container">
+      <h2 className="signup-heading">Sign Up</h2>
+      <form className="signup-form" onSubmit={handleSignup}>
+        <label className="signup-label">
           Full Name:
-          <input type="text" value={fullName} onChange={(e) => setFullName(e.target.value)} />
+          <input
+            className="signup-input"
+            type="text"
+            value={fullName}
+            onChange={(e) => setFullName(e.target.value)}
+          />
         </label>
-        <br />
-        <label>
+        <label className="signup-label">
           Username:
-          <input type="text" value={username} onChange={(e) => setUsername(e.target.value)} />
+          <input
+            className="signup-input"
+            type="text"
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
+          />
         </label>
-        <br />
-        <label>
+        <label className="signup-label">
           Password:
-          <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} />
+          <input
+            className="signup-input"
+            type="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+          />
         </label>
-        <br />
-        <button type="submit">Sign Up</button>
+        <button className="signup-button" type="submit">
+          Sign Up
+        </button>
+
+        {signupStatus === 'success' && (
+          <div className="dialog success">
+            Signup successful! 
+          </div>
+        )}
+        {signupStatus === 'failed' && (
+          <div className="dialog error">Signup failed. Please try again.</div>
+        )}
       </form>
     </div>
   );

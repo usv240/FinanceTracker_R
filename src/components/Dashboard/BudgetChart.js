@@ -6,6 +6,9 @@ import '../../styles/BudgetChart.css';
 function BudgetChart({ token }) {
   const canvasRef = useRef(null);
   const pieCanvasRef = useRef(null);
+  const scatterCanvasRef = useRef(null);
+  const bubbleCanvasRef = useRef(null);
+
   const [selectedMonth, setSelectedMonth] = useState('');
   const [loading, setLoading] = useState(true);
   const [budgetData, setBudgetData] = useState([]);
@@ -17,26 +20,30 @@ function BudgetChart({ token }) {
         const budgetEndpoint = selectedMonth
           ? `/budgets/getAllBudgets/${selectedMonth}`
           : '/budgets/getAllBudgets';
-  
-        const capacityEndpoint = '/budgets/capacity';
-  
+
+        const capacityEndpoint = selectedMonth
+          ? `/budgets/capacity/${selectedMonth}`
+          : '/budgets/capacity';
+
         const [budgetResponse, capacityResponse] = await Promise.all([
           apiService.get(budgetEndpoint, token, {
             params: { month: parseInt(selectedMonth, 10) },
           }),
           apiService.get(capacityEndpoint, token),
         ]);
-  
+
         const budgetData = budgetResponse.data || [];
         const capacityData = capacityResponse.data || [];
-  
+
         setBudgetData(budgetData);
         setBudgetCapacity(capacityData);
         setLoading(false);
-  
+
         // Call the chart creation functions after fetching data
         createBarChart();
         createPieChart();
+        createScatterPlot();
+        createBubbleChart();
         drawAdditionalCircle();
         drawSecondCircle();
       } catch (error) {
@@ -44,15 +51,16 @@ function BudgetChart({ token }) {
         setLoading(false);
       }
     };
-  
+
     fetchDataAndCharts();
   }, [token, selectedMonth]);
-  
 
   useEffect(() => {
-    if (!loading && budgetData.length > 0 && budgetCapacity.length > 0) {
+    if (!loading) {
       createBarChart();
       createPieChart();
+      createScatterPlot();
+      createBubbleChart();
       drawAdditionalCircle();
       drawSecondCircle();
     }
@@ -181,27 +189,138 @@ function BudgetChart({ token }) {
     }
   };
 
+// ... (previous code)
+
+// ... (previous code)
+
+const createScatterPlot = () => {
+  const scatterCanvas = scatterCanvasRef.current;
+
+  if (!scatterCanvas) {
+    console.error('Scatter Canvas element not found');
+    return;
+  }
+
+  const scatterCtx = scatterCanvas.getContext('2d');
+  if (!scatterCtx) {
+    console.error('Unable to get 2D context for scatter canvas');
+    return;
+  }
+
+  try {
+    if (scatterCanvas.chart) {
+      scatterCanvas.chart.destroy();
+    }
+
+    const scatterData = budgetData.map(item => ({
+      x: item.actualExpenditure || 0,
+      y: item.budgetCapacity || 0,
+      label: item.budgetname,
+    }));
+
+    console.log('scatterData:', scatterData);
+
+    scatterCanvas.chart = new Chart(scatterCtx, {
+      type: 'scatter',
+      data: {
+        datasets: [{
+          label: 'Scatter Plot',
+          data: scatterData,
+          backgroundColor: '#ff6384',
+        }],
+      },
+      options: {
+        scales: {
+          x: { type: 'linear', position: 'bottom' },
+          y: { type: 'linear', position: 'left' },
+        },
+      },
+    });
+  } catch (error) {
+    console.error('Error creating scatter plot: ', error);
+  }
+};
+
+const createBubbleChart = () => {
+  const bubbleCanvas = bubbleCanvasRef.current;
+
+  if (!bubbleCanvas) {
+    console.error('Bubble Canvas element not found');
+    return;
+  }
+
+  const bubbleCtx = bubbleCanvas.getContext('2d');
+  if (!bubbleCtx) {
+    console.error('Unable to get 2D context for bubble canvas');
+    return;
+  }
+
+  try {
+    if (bubbleCanvas.chart) {
+      bubbleCanvas.chart.destroy();
+    }
+
+    const bubbleData = budgetData.map(item => ({
+      x: item.actualExpenditure || 0,
+      y: item.budgetCapacity || 0,
+      r: Math.sqrt(item.budgetCapacity >= 0 ? item.budgetCapacity : 0) * 2,
+      label: item.budgetname,
+    }));
+
+    console.log('bubbleData:', bubbleData);
+
+    bubbleCanvas.chart = new Chart(bubbleCtx, {
+      type: 'bubble',
+      data: {
+        datasets: [{
+          label: 'Bubble Chart',
+          data: bubbleData,
+          backgroundColor: '#36a2eb',
+        }],
+      },
+      options: {
+        scales: {
+          x: { type: 'linear', position: 'bottom' },
+          y: { type: 'linear', position: 'left' },
+        },
+      },
+    });
+  } catch (error) {
+    console.error('Error creating bubble chart: ', error);
+  }
+};
+
+// ... (rest of the code)
+
+
+
+
+// ... (rest of the code)
+
+  
+  
+
   const drawAdditionalCircle = () => {
     console.log('Drawing additional circle'); // Add this line for debugging
-  
+
     const pieCanvas = pieCanvasRef.current;
-  
+
     if (!pieCanvas) {
       console.error('Pie Canvas element not found');
       return;
     }
-  
+
     const pieCtx = pieCanvas.getContext('2d');
     if (!pieCtx) {
       console.error('Unable to get 2D context for pie canvas');
       return;
     }
-  
+
     try {
       const centerX = pieCanvas.width / 2;
       const centerY = pieCanvas.height / 2;
       const radius = Math.min(centerX, centerY) * 0.8; // Adjust the multiplier based on your preference
-  
+
       // Draw the outer circle
       pieCtx.beginPath();
       pieCtx.arc(centerX, centerY, radius, 0, 2 * Math.PI);
@@ -273,13 +392,33 @@ function BudgetChart({ token }) {
         <p>Loading...</p>
       ) : (
         <div>
-          {budgetData.length > 0 && budgetCapacity.length > 0 ? (
+          {(budgetData.length > 0 && budgetCapacity.length > 0) && (
             <>
               <canvas className="budget-canvas" ref={canvasRef}></canvas>
               <h3>Pie Chart</h3>
               <canvas className="budget-pie-canvas" ref={pieCanvasRef}></canvas>
+              <h3>Scatter Plot</h3>
+              <canvas className="budget-scatter-canvas" ref={scatterCanvasRef}></canvas>
+              <h3>Bubble Chart</h3>
+              <canvas className="budget-bubble-canvas" ref={bubbleCanvasRef}></canvas>
             </>
-          ) : (
+          )}
+          {budgetData.length > 0 && budgetCapacity.length <= 0 && (
+            <>
+              <canvas className="budget-canvas" ref={canvasRef} width="400" height="200"></canvas>
+              <h3>Pie Chart</h3>
+              <canvas className="budget-pie-canvas" ref={pieCanvasRef} width="400" height="200"></canvas>
+              <h3>Scatter Plot</h3>
+              <canvas className="budget-scatter-canvas" ref={scatterCanvasRef} width="400" height="200"></canvas>
+              <h3>Bubble Chart</h3>
+              <canvas className="budget-bubble-canvas" ref={bubbleCanvasRef} width="400" height="200"></canvas>
+
+            </>
+          )}
+          {budgetData.length === 0 && budgetCapacity.length === 0 && (
+            <p>No budget data available.</p>
+          )}
+          {budgetData.length === 0 && budgetCapacity.length > 0 && (
             <p>No budget data available.</p>
           )}
         </div>

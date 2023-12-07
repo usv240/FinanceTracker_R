@@ -1,5 +1,8 @@
+// BudgetList.js
+
 import React, { useState, useEffect } from 'react';
 import apiService from '../services/apiService';
+import '../../styles/BudgetList.css';
 
 const BudgetList = ({ token }) => {
   const [budgets, setBudgets] = useState([]);
@@ -18,11 +21,17 @@ const BudgetList = ({ token }) => {
           ? `/budgets/getAllBudgets/${selectedMonth}`
           : '/budgets/getAllBudgets';
 
-        const capacityEndpoint = '/budgets/capacity';
+        const capacityEndpoint = selectedMonth
+          ? `/budgets/capacity/${selectedMonth}`
+          : '/budgets/capacity';
+
+        const capacityParams = selectedMonth
+          ? { params: { month: parseInt(selectedMonth, 10) } }
+          : {};
 
         const [response, capacityResponse] = await Promise.all([
           apiService.get(endpoint, token, { params: { month: parseInt(selectedMonth, 10) } }),
-          apiService.get(capacityEndpoint, token),
+          apiService.get(capacityEndpoint, token, capacityParams),
         ]);
 
         setBudgets(response.data);
@@ -35,20 +44,20 @@ const BudgetList = ({ token }) => {
     };
 
     fetchBudgets();
-  }, [token, selectedMonth]);
+  }, [token, selectedMonth]); // Include dependencies here
 
   const handleMonthChange = (event) => {
     setSelectedMonth(event.target.value);
   };
 
   return (
-    <div>
-      <h2>Budget List</h2>
+    <div className="budget-list-container">
+      <h2 className="list-header">Budget List</h2>
 
       <label>
         Select Month:
-        <select value={selectedMonth} onChange={handleMonthChange}>
-          <option value="">All Months</option>
+        <select className="select-dropdown" value={selectedMonth} onChange={handleMonthChange}>
+        <option value="">All Months</option>
           <option value="1">January</option>
           <option value="2">February</option>
           <option value="3">March</option>
@@ -74,7 +83,9 @@ const BudgetList = ({ token }) => {
               <div className="table-cell">Remaining Balance</div>
             </div>
             {budgets.map((budget) => {
-              const capacityForBudget = capacityData.find(capacityItem => capacityItem.budgetname === budget.budgetname);
+              const capacityForBudget = capacityData.find(
+                (capacityItem) => capacityItem.budgetname === budget.budgetname
+              );
 
               const budgetNumber = budget.budgetnumber || 0;
               const capacityNumber = capacityForBudget ? capacityForBudget.budgetnumber || 0 : 0;
@@ -86,16 +97,16 @@ const BudgetList = ({ token }) => {
                   <div className="table-cell">{budget.budgetname}</div>
                   <div className="table-cell">{budgetNumber}</div>
                   <div className="table-cell">{capacityNumber}</div>
-                  <div className="table-cell">{remainingBalance}</div>
+                  <div className={`table-cell remaining-balance`}>{remainingBalance}</div>
                 </div>
               );
             })}
           </div>
         ) : (
-          <p>No budget data available.</p>
+          <p className="no-data-message">No budget data available.</p>
         )
       ) : (
-        <p>Loading...</p>
+        <p className="loading-message">Loading...</p>
       )}
     </div>
   );

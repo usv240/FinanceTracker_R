@@ -3,6 +3,9 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Modal from 'react-modal';
 import authService from '../services/authService';
+import '../../styles/login.css'; // Import the CSS file
+
+
 
 const Login = ({ onLogin }) => {
   const [username, setUsername] = useState('');
@@ -37,41 +40,37 @@ const Login = ({ onLogin }) => {
   };
 
   return (
-    <div>
-      <h2>Login</h2>
+    <div className="login-container">
+      <h2 className="login-heading">Login</h2>
       <input
+        className="login-input"
         type="text"
         placeholder="Username"
         value={username}
         onChange={(e) => setUsername(e.target.value)}
       />
       <input
+        className="login-input"
         type="password"
         placeholder="Password"
         value={password}
         onChange={(e) => setPassword(e.target.value)}
       />
-      <button onClick={handleLogin}>Login</button>
+      <button className="login-button" onClick={handleLogin}>
+        Login
+      </button>
 
       {/* Modal for displaying login message */}
       <Modal
         isOpen={isModalOpen}
         onRequestClose={closeModal}
         contentLabel="Login Message"
-        style={{
-          overlay: {
-            backgroundColor: 'rgba(0, 0, 0, 0.5)',
-          },
-          content: {
-            width: '50%',
-            margin: 'auto',
-            backgroundColor: 'white',
-            padding: '20px',
-          },
-        }}
+        className="login-modal"
       >
         <h2>{loginMessage}</h2>
-        <button onClick={closeModal}>Close</button>
+        <button className="login-button" onClick={closeModal}>
+          Close
+        </button>
       </Modal>
     </div>
   );

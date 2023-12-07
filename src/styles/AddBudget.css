@@ -1,0 +1,56 @@
+/* AddBudgetForm.css */
+
+.add-budget-form {
+     max-width: 400px;
+    margin: -25% auto 0; 
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); 
+}
+
+.add-budget-form label {
+    
+    margin-bottom: 10px;
+}
+
+.add-budget-form input
+ {
+    
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 10px;
+    box-sizing: border-box;
+}
+
+.add-budget-form h2 {
+    font-size: 1.5rem;
+    margin-bottom: 15px;
+}
+
+.add-budget-form button {
+    
+    color: #ffffff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.add-budget-form button:hover {
+    
+}
+
+/* AddBudget.css */
+
+/* Override the default styles for the hover effect on the month */
+.add-budget-form .react-datepicker__month-text.react-datepicker__month--selected:hover,
+.add-budget-form .react-datepicker__month-text.react-datepicker__month--in-range:hover,
+.add-budget-form .react-datepicker__month-text.react-datepicker__month--in-selecting-range:hover {
+  background-color: transparent; /* Set the background color to transparent or your desired color */
+  color: #180909; /* Set the text color to your desired color */
+}
+
+/* Additional styling for the month container if needed */
+.add-budget-form .react-datepicker__month-container {
+  /* Add your styles here */
+}

@@ -1,0 +1,65 @@
+/* loginStyles.css */
+
+.login-container {
+    max-width: 400px;
+    margin: 0 auto;
+    padding: 20px;
+  }
+  
+  .login-heading {
+    font-size: 1.5rem;
+    text-align: center;
+    margin-bottom: 20px;
+  }
+  
+  .login-input {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 15px;
+  }
+  
+  .login-button {
+    background-color: #4caf50;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    cursor: pointer;
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
+  }
+  
+  .login-button:hover {
+    background-color: #45a049;
+  }
+  
+  /* Define styles within the Modal component */
+  .login-modal {
+    /* overlay style */
+    background-color: rgba(0, 0, 0, 0.5);
+  
+    /* content style */
+    width: 50%;
+    margin: auto;
+    background-color: white;
+    padding: 20px;
+  }
+  
+  .login-modal h2 {
+    margin-bottom: 10px;
+  }
+  
+  .login-modal button {
+    background-color: #4caf50;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    cursor: pointer;
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
+    margin-top: 10px;
+  }
+  
+  .login-modal button:hover {
+    background-color: #45a049;
+  }
+  
