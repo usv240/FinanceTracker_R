@@ -1,19 +1,58 @@
 /* BudgetChart.css */
 
-budget-chart {
-  max-width: 100px;
-  margin: 100 auto;
+
+.budget-chart {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  max-width: 1000px;
+  margin: 800px auto 0; /* Add top margin to position below another default element */
+  text-align: center;
 }
 
-budget-chart canvas {
-  width: 10%;
-  height: 100%; /* Set canvas height to 100% for responsiveness */
-  max-width: 100%;
+.label-container {
+  margin-bottom: 20px; /* Add some spacing between label and charts */
+}
+
+.budget-chart select {
+  width: 150px;
+}
+
+.chart {
+  flex: 1;
+  text-align: center;
+}
+
+.chart2 {
+  flex: 2;
+  text-align: center;
+}
+
+.charts-container {
+  margin-top: 20px;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 20px; /* Adjust the gap between charts */
 }
 
 .budget-canvas,
-.budget-pie-canvas {
+.budget-pie-canvas,
+.budget-scatter-canvas,
+.budget-bubble-canvas {
   width: 100%;
-  height: 100%; /* Set canvas height to 100% for responsiveness */
-  margin-bottom: 25px;
+  max-width: 100%; /* Set a maximum width for the charts */
+  height: auto; /* Auto height for responsiveness */
+  margin-bottom: 20px; /* Add margin between charts */
+}
+
+@media (min-width: 600px) {
+  .charts-container {
+    flex-direction: row; /* Display charts in a row for larger screens */
+  }
+
+  .chart,
+  .chart2 {
+    flex: 1; /* Equal width for larger screens */
+  }
 }

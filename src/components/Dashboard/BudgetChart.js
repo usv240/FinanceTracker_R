@@ -1,13 +1,16 @@
+// BudgetChart.js
+
 import React, { useState, useEffect, useRef } from 'react';
 import Chart from 'chart.js/auto';
 import apiService from '../services/apiService';
 import '../../styles/BudgetChart.css';
 
-function BudgetChart({ token }) {
+const BudgetChart = ({ token }) => {
   const canvasRef = useRef(null);
   const pieCanvasRef = useRef(null);
-  const scatterCanvasRef = useRef(null);
-  const bubbleCanvasRef = useRef(null);
+  // const scatterCanvasRef = useRef(null);
+  // const bubbleCanvasRef = useRef(null);
+  const lineCanvasRef = useRef(null);
 
   const [selectedMonth, setSelectedMonth] = useState('');
   const [loading, setLoading] = useState(true);
@@ -42,10 +45,11 @@ function BudgetChart({ token }) {
         // Call the chart creation functions after fetching data
         createBarChart();
         createPieChart();
-        createScatterPlot();
-        createBubbleChart();
-        drawAdditionalCircle();
-        drawSecondCircle();
+        createLineChart();
+        // createScatterPlot();
+        // createBubbleChart();
+        // drawAdditionalCircle();
+        // drawSecondCircle();
       } catch (error) {
         console.error('Error fetching budget data: ', error);
         setLoading(false);
@@ -59,10 +63,7 @@ function BudgetChart({ token }) {
     if (!loading) {
       createBarChart();
       createPieChart();
-      createScatterPlot();
-      createBubbleChart();
-      drawAdditionalCircle();
-      drawSecondCircle();
+      createLineChart();
     }
   }, [loading, budgetData, budgetCapacity]);
 
@@ -189,191 +190,105 @@ function BudgetChart({ token }) {
     }
   };
 
-// ... (previous code)
-
-// ... (previous code)
-
-const createScatterPlot = () => {
-  const scatterCanvas = scatterCanvasRef.current;
-
-  if (!scatterCanvas) {
-    console.error('Scatter Canvas element not found');
-    return;
-  }
-
-  const scatterCtx = scatterCanvas.getContext('2d');
-  if (!scatterCtx) {
-    console.error('Unable to get 2D context for scatter canvas');
-    return;
-  }
-
-  try {
-    if (scatterCanvas.chart) {
-      scatterCanvas.chart.destroy();
-    }
-
-    const scatterData = budgetData.map(item => ({
-      x: item.actualExpenditure || 0,
-      y: item.budgetCapacity || 0,
-      label: item.budgetname,
-    }));
-
-    console.log('scatterData:', scatterData);
-
-    scatterCanvas.chart = new Chart(scatterCtx, {
-      type: 'scatter',
-      data: {
-        datasets: [{
-          label: 'Scatter Plot',
-          data: scatterData,
-          backgroundColor: '#ff6384',
-        }],
-      },
-      options: {
-        scales: {
-          x: { type: 'linear', position: 'bottom' },
-          y: { type: 'linear', position: 'left' },
-        },
-      },
-    });
-  } catch (error) {
-    console.error('Error creating scatter plot: ', error);
-  }
-};
-
-const createBubbleChart = () => {
-  const bubbleCanvas = bubbleCanvasRef.current;
-
-  if (!bubbleCanvas) {
-    console.error('Bubble Canvas element not found');
-    return;
-  }
-
-  const bubbleCtx = bubbleCanvas.getContext('2d');
-  if (!bubbleCtx) {
-    console.error('Unable to get 2D context for bubble canvas');
-    return;
-  }
-
-  try {
-    if (bubbleCanvas.chart) {
-      bubbleCanvas.chart.destroy();
-    }
-
-    const bubbleData = budgetData.map(item => ({
-      x: item.actualExpenditure || 0,
-      y: item.budgetCapacity || 0,
-      r: Math.sqrt(item.budgetCapacity >= 0 ? item.budgetCapacity : 0) * 2,
-      label: item.budgetname,
-    }));
-
-    console.log('bubbleData:', bubbleData);
-
-    bubbleCanvas.chart = new Chart(bubbleCtx, {
-      type: 'bubble',
-      data: {
-        datasets: [{
-          label: 'Bubble Chart',
-          data: bubbleData,
-          backgroundColor: '#36a2eb',
-        }],
-      },
-      options: {
-        scales: {
-          x: { type: 'linear', position: 'bottom' },
-          y: { type: 'linear', position: 'left' },
-        },
-      },
-    });
-  } catch (error) {
-    console.error('Error creating bubble chart: ', error);
-  }
-};
-
-// ... (rest of the code)
-
-
-
-
-// ... (rest of the code)
-
+  const createLineChart = async () => {
+    const lineCanvas = lineCanvasRef.current;
   
-  
-
-  const drawAdditionalCircle = () => {
-    console.log('Drawing additional circle'); // Add this line for debugging
-
-    const pieCanvas = pieCanvasRef.current;
-
-    if (!pieCanvas) {
-      console.error('Pie Canvas element not found');
+    if (!lineCanvas) {
+      console.error('Line Canvas element not found');
       return;
     }
-
-    const pieCtx = pieCanvas.getContext('2d');
-    if (!pieCtx) {
-      console.error('Unable to get 2D context for pie canvas');
+  
+    const lineCtx = lineCanvas.getContext('2d');
+    if (!lineCtx) {
+      console.error('Unable to get 2D context for line canvas');
       return;
     }
-
+  
     try {
-      const centerX = pieCanvas.width / 2;
-      const centerY = pieCanvas.height / 2;
-      const radius = Math.min(centerX, centerY) * 0.8; // Adjust the multiplier based on your preference
-
-      // Draw the outer circle
-      pieCtx.beginPath();
-      pieCtx.arc(centerX, centerY, radius, 0, 2 * Math.PI);
-      pieCtx.strokeStyle = 'red'; // Change the color to something distinct
-      pieCtx.lineWidth = 2;
-      pieCtx.stroke();
-      pieCtx.closePath();
+      if (lineCanvas.chart) {
+        lineCanvas.chart.destroy();
+      }
+  
+      const cumulativeData = [];
+  
+      // Fetch data for each month and sum the budgetnumber and capacitynumber values
+      for (let month = 1; month <= 12; month++) {
+        const budgetsResponse = await apiService.get(`/budgets/getAllBudgets/${month}`, token);
+        const capacityResponse = await apiService.get(`/budgets/capacity/${month}`, token);
+  
+        const budgetData = budgetsResponse.data || [];
+        const capacityData = capacityResponse.data || [];
+  
+        let totalBudget = 0;
+        let totalCapacity = 0;
+  
+        for (const item of budgetData) {
+          totalBudget += Number(item.budgetnumber) || 0;
+        }
+  
+        for (const item of capacityData) {
+          totalCapacity += Number(item.budgetnumber) || 0;
+        }
+  
+        cumulativeData.push({
+          month: month,
+          totalBudget: totalBudget,
+          totalCapacity: totalCapacity,
+        });
+      }
+  
+      //console.log('cumulativeData', cumulativeData);
+  
+      const chartData = {
+        labels: cumulativeData.map(item => item.month),
+        datasets: [
+          {
+            label: 'Cumulative Actual Budget',
+            borderColor: '#ff6384',
+            data: cumulativeData.map(item => item.totalBudget),
+            fill: false,
+          },
+          {
+            label: 'Cumulative Budget Capacity',
+            borderColor: '#36a2eb',
+            data: cumulativeData.map(item => item.totalCapacity),
+            fill: false,
+          },
+        ],
+      };
+  
+      lineCanvas.chart = new Chart(lineCtx, {
+        type: 'line',
+        data: chartData,
+        options: {
+          scales: {
+            x: {
+              type: 'category',
+              labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
+            },
+            y: {
+              type: 'linear',
+              position: 'left',
+            },
+          },
+        },
+      });
     } catch (error) {
-      console.error('Error drawing additional circle: ', error);
+      console.error('Error creating line chart: ', error);
     }
   };
-
-  const drawSecondCircle = () => {
-    const pieCanvas = pieCanvasRef.current;
-
-    if (!pieCanvas) {
-      console.error('Pie Canvas element not found');
-      return;
-    }
-
-    const pieCtx = pieCanvas.getContext('2d');
-    if (!pieCtx) {
-      console.error('Unable to get 2D context for pie canvas');
-      return;
-    }
-
-    try {
-      const centerX = pieCanvas.width / 2;
-      const centerY = pieCanvas.height / 2;
-      const radius = Math.min(centerX, centerY) * 0.6; // Adjust the multiplier based on your preference
-
-      pieCtx.beginPath();
-      pieCtx.arc(centerX, centerY, radius, 0, 2 * Math.PI);
-      pieCtx.strokeStyle = 'green'; // Change the color as needed
-      pieCtx.lineWidth = 2; // Change the line width as needed
-      pieCtx.stroke();
-      pieCtx.closePath();
-    } catch (error) {
-      console.error('Error drawing second circle: ', error);
-    }
-  };
-
+  
+  
   const handleMonthChange = (event) => {
     setSelectedMonth(event.target.value);
   };
 
   return (
     <div className="budget-chart">
-      <h3>Budget Chart</h3>
-      <label>
-        Select Month:
-        <select value={selectedMonth} onChange={handleMonthChange}>
-          <option value="">All Months</option>
+      <h3>Different types of Budget Chart are being displayed</h3>
+      <div className="label-container">
+      <select value={selectedMonth} onChange={handleMonthChange}>
+      <option value="">All Months</option>
           <option value="1">January</option>
           <option value="2">February</option>
           <option value="3">March</option>
@@ -386,45 +301,56 @@ const createBubbleChart = () => {
           <option value="10">October</option>
           <option value="11">November</option>
           <option value="12">December</option>
-        </select>
-      </label>
+      </select>
+      </div>
       {loading ? (
         <p>Loading...</p>
       ) : (
-        <div>
-          {(budgetData.length > 0 && budgetCapacity.length > 0) && (
-            <>
-              <canvas className="budget-canvas" ref={canvasRef}></canvas>
+        <div className="scrollable-container">
+          <div className="charts-container">
+            <div className="chart">
+              <h3>Bar Chart</h3>
+              {budgetData.length > 0 && budgetCapacity.length > 0 && (
+                <canvas className="budget-canvas" ref={canvasRef} width={800} height={900}></canvas>
+              )}
+              {budgetData.length === 0 && budgetCapacity.length > 0 && <p>No budget data available.</p>}
+            </div>
+            <div className="chart">
               <h3>Pie Chart</h3>
-              <canvas className="budget-pie-canvas" ref={pieCanvasRef}></canvas>
+              {budgetData.length > 0 && budgetCapacity.length > 0 && (
+                <canvas className="budget-pie-canvas" ref={pieCanvasRef} width={800} height={900}></canvas>
+              )}
+              {budgetData.length === 0 && budgetCapacity.length > 0 && <p>No budget data available.</p>}
+            </div>
+          </div>
+          <div className="charts-container">
+            {/* <div className="chart2">
               <h3>Scatter Plot</h3>
-              <canvas className="budget-scatter-canvas" ref={scatterCanvasRef}></canvas>
+              {budgetData.length > 0 && budgetCapacity.length > 0 && (
+                <canvas className="budget-scatter-canvas" ref={scatterCanvasRef} width={800} height={900}></canvas>
+              )}
+              {budgetData.length === 0 && budgetCapacity.length > 0 && <p>No budget data available.</p>}
+            </div>
+            <div className="chart2">
               <h3>Bubble Chart</h3>
-              <canvas className="budget-bubble-canvas" ref={bubbleCanvasRef}></canvas>
-            </>
-          )}
-          {budgetData.length > 0 && budgetCapacity.length <= 0 && (
-            <>
-              <canvas className="budget-canvas" ref={canvasRef} width="400" height="200"></canvas>
-              <h3>Pie Chart</h3>
-              <canvas className="budget-pie-canvas" ref={pieCanvasRef} width="400" height="200"></canvas>
-              <h3>Scatter Plot</h3>
-              <canvas className="budget-scatter-canvas" ref={scatterCanvasRef} width="400" height="200"></canvas>
-              <h3>Bubble Chart</h3>
-              <canvas className="budget-bubble-canvas" ref={bubbleCanvasRef} width="400" height="200"></canvas>
-
-            </>
-          )}
-          {budgetData.length === 0 && budgetCapacity.length === 0 && (
-            <p>No budget data available.</p>
-          )}
-          {budgetData.length === 0 && budgetCapacity.length > 0 && (
-            <p>No budget data available.</p>
-          )}
+              {budgetData.length > 0 && budgetCapacity.length > 0 && (
+                <canvas className="budget-bubble-canvas" ref={bubbleCanvasRef} width={800} height={900}></canvas>
+              )}
+              {budgetData.length === 0 && budgetCapacity.length > 0 && <p>No budget data available.</p>}
+            </div> */}
+            <div className="chart2">
+              <h3>Line Chart</h3>
+              {budgetData.length > 0 && budgetCapacity.length > 0 && (
+                <canvas className="budget-line-canvas" ref={lineCanvasRef} width={800} height={400}></canvas>
+              )}
+              {budgetData.length === 0 && budgetCapacity.length > 0 && <p>No budget data available.</p>}
+            </div>
+          </div>
+          {/* Repeat the same pattern for other charts */}
         </div>
       )}
     </div>
   );
-}
+};
 
 export default BudgetChart;
