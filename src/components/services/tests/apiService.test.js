@@ -1,8 +1,10 @@
 import axios from 'axios';
 import apiService from '../apiService';
+import config from '../../config';
 
 jest.mock('axios');
-const BASE_URL = 'http://localhost:5000/api'; // Replace with your actual backend URL
+const BASE_URL = config.apiUrl+'/api'; // Replace with your actual backend URL
+
 
 describe('apiService', () => {
   describe('get method', () => {

@@ -52,7 +52,7 @@ const BudgetList = ({ token }) => {
 
   return (
     <div className="budget-list-container">
-      <h2 className="list-header">Budget List</h2>
+      <h2 className="list-header">ALL BUDGETS ARE LISTED HERE</h2>
 
       <label>
         Select Month:

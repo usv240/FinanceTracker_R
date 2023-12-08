@@ -11,6 +11,7 @@ const BudgetChart = ({ token }) => {
   // const scatterCanvasRef = useRef(null);
   // const bubbleCanvasRef = useRef(null);
   const lineCanvasRef = useRef(null);
+  const bubbleCanvasRef = useRef(null);
 
   const [selectedMonth, setSelectedMonth] = useState('');
   const [loading, setLoading] = useState(true);
@@ -47,7 +48,7 @@ const BudgetChart = ({ token }) => {
         createPieChart();
         createLineChart();
         // createScatterPlot();
-        // createBubbleChart();
+         createBubbleChart();
         // drawAdditionalCircle();
         // drawSecondCircle();
       } catch (error) {
@@ -64,6 +65,7 @@ const BudgetChart = ({ token }) => {
       createBarChart();
       createPieChart();
       createLineChart();
+      createBubbleChart();
     }
   }, [loading, budgetData, budgetCapacity]);
 
@@ -104,7 +106,7 @@ const BudgetChart = ({ token }) => {
             data: combinedData.map(item => item.actualExpenditure),
           },
           {
-            label: 'Budget Capacity',
+            label: 'Budget',
             backgroundColor: '#36a2eb',
             data: combinedData.map(item => item.budgetCapacity),
           },
@@ -249,7 +251,7 @@ const BudgetChart = ({ token }) => {
             fill: false,
           },
           {
-            label: 'Cumulative Budget Capacity',
+            label: 'Cumulative Budget',
             borderColor: '#36a2eb',
             data: cumulativeData.map(item => item.totalCapacity),
             fill: false,
@@ -277,6 +279,145 @@ const BudgetChart = ({ token }) => {
       console.error('Error creating line chart: ', error);
     }
   };
+
+  const createBubbleChart = async () => {
+  const monthNames = [
+    'January', 'February', 'March', 'April',
+    'May', 'June', 'July', 'August',
+    'September', 'October', 'November', 'December'
+  ];
+
+  const bubbleCanvas = bubbleCanvasRef.current;
+
+  if (!bubbleCanvas) {
+    console.error('Bubble Canvas element not found');
+    return;
+  }
+
+  const bubbleCtx = bubbleCanvas.getContext('2d');
+  if (!bubbleCtx) {
+    console.error('Unable to get 2D context for bubble canvas');
+    return;
+  }
+
+  try {
+    // Destroy existing chart instance
+    if (bubbleCanvas.chart) {
+      bubbleCanvas.chart.destroy();
+    }
+
+    // Create a new canvas element
+    const newBubbleCanvas = document.createElement('canvas');
+    bubbleCanvas.parentNode.replaceChild(newBubbleCanvas, bubbleCanvas);
+    bubbleCanvasRef.current = newBubbleCanvas;
+
+    const newBubbleCtx = newBubbleCanvas.getContext('2d');
+    if (!newBubbleCtx) {
+      console.error('Unable to get 2D context for the new bubble canvas');
+      return;
+    }
+
+    const cumulativeData = [];
+
+    // Fetch data for each month and sum the budgetnumber and capacitynumber values
+    for (let month = 1; month <= 12; month++) {
+      try {
+        const budgetsResponse = await apiService.get(`/budgets/getAllBudgets/${month}`, token);
+        const capacityResponse = await apiService.get(`/budgets/capacity/${month}`, token);
+
+        const budgetData = budgetsResponse.data || [];
+        const capacityData = capacityResponse.data || [];
+
+        let totalBudget = 0;
+        let totalCapacity = 0;
+
+        for (const item of budgetData) {
+          totalBudget += Number(item.budgetnumber) || 0;
+        }
+
+        for (const item of capacityData) {
+          totalCapacity += Number(item.budgetnumber) || 0;
+        }
+
+        cumulativeData.push({
+          month: month,
+          monthName: monthNames[month - 1],
+          totalBudget: totalBudget,
+          totalCapacity: totalCapacity,
+        });
+      } catch (error) {
+        console.error(`Error fetching data for month ${month}: `, error);
+      }
+    }
+
+    const bubbleData = cumulativeData.map(item => ({
+      month: item.month,
+      monthName: item.monthName,
+      totalBudget: item.totalBudget,
+      totalCapacity: item.totalCapacity,
+      // Add a new property for the size of the bubble
+      bubbleSize: calculateBubbleSize(item.totalBudget, item.totalCapacity),
+    }));
+
+    console.log('bubbleChartData:', bubbleData);
+
+    newBubbleCanvas.chart = new Chart(newBubbleCtx, {
+      type: 'bubble',
+      data: {
+        datasets: [
+          {
+            label: 'Budget',
+            backgroundColor: '#36a2eb', // Set the color for total budget bubbles
+            data: bubbleData.map(item => ({
+              x: item.month,
+              y: item.totalBudget,
+              r: item.bubbleSize,
+              monthName: item.monthName,
+            })),
+          },
+          {
+            label: 'Actual Expenditure',
+            backgroundColor: '#ff6384', // Set the color for total capacity bubbles
+            data: bubbleData.map(item => ({
+              x: item.month,
+              y: item.totalCapacity,
+              r: item.bubbleSize,
+              monthName: item.monthName,
+            })),
+          },
+        ],
+      },
+      options: {
+        tooltips: {
+          callbacks: {
+            label: (tooltipItem, data) => {
+              const datasetLabel = data.datasets[tooltipItem.datasetIndex].label || '';
+              const value = data.datasets[tooltipItem.datasetIndex].data[tooltipItem.index].y;
+              const monthName = data.datasets[tooltipItem.datasetIndex].data[tooltipItem.index].monthName;
+              return `${datasetLabel}: ${value} for ${monthName}`;
+            },
+          },
+        },
+      },
+    });
+  } catch (error) {
+    console.error('Error creating bubble chart: ', error);
+  }
+};
+
+  
+  
+  
+  const calculateBubbleSize = (totalBudget, totalCapacity) => {
+    // Your logic to calculate bubble size based on totalBudget and totalCapacity
+    // Here's a simple example, you can customize it based on your needs
+    console.log('totalBudget', totalBudget);
+    console.log('totalCapacity', totalCapacity);
+    const percentageSpent = (totalCapacity / totalBudget) * 4;
+    const bubbleSize = Math.max(10, percentageSpent); // Adjust the scale as needed
+    return bubbleSize;
+  };
+  
   
   
   const handleMonthChange = (event) => {
@@ -309,16 +450,16 @@ const BudgetChart = ({ token }) => {
         <div className="scrollable-container">
           <div className="charts-container">
             <div className="chart">
-              <h3>Bar Chart</h3>
+              <h3>Actual Expenditure vs Budget</h3>
               {budgetData.length > 0 && budgetCapacity.length > 0 && (
-                <canvas className="budget-canvas" ref={canvasRef} width={800} height={900}></canvas>
+                <canvas className="budget-canvas" ref={canvasRef} width={800} height={800}></canvas>
               )}
               {budgetData.length === 0 && budgetCapacity.length > 0 && <p>No budget data available.</p>}
             </div>
             <div className="chart">
-              <h3>Pie Chart</h3>
+              <h3>Actual Expenditure Graph</h3>
               {budgetData.length > 0 && budgetCapacity.length > 0 && (
-                <canvas className="budget-pie-canvas" ref={pieCanvasRef} width={800} height={900}></canvas>
+                <canvas className="budget-pie-canvas" ref={pieCanvasRef} width={800} height={800}></canvas>
               )}
               {budgetData.length === 0 && budgetCapacity.length > 0 && <p>No budget data available.</p>}
             </div>
@@ -330,18 +471,19 @@ const BudgetChart = ({ token }) => {
                 <canvas className="budget-scatter-canvas" ref={scatterCanvasRef} width={800} height={900}></canvas>
               )}
               {budgetData.length === 0 && budgetCapacity.length > 0 && <p>No budget data available.</p>}
-            </div>
-            <div className="chart2">
-              <h3>Bubble Chart</h3>
-              {budgetData.length > 0 && budgetCapacity.length > 0 && (
-                <canvas className="budget-bubble-canvas" ref={bubbleCanvasRef} width={800} height={900}></canvas>
-              )}
-              {budgetData.length === 0 && budgetCapacity.length > 0 && <p>No budget data available.</p>}
             </div> */}
             <div className="chart2">
-              <h3>Line Chart</h3>
+              {/* <h3>Bubble Chart</h3> */}
+              <h3>Month, Actual Expenditure, Budget Capacity Index</h3>
               {budgetData.length > 0 && budgetCapacity.length > 0 && (
-                <canvas className="budget-line-canvas" ref={lineCanvasRef} width={800} height={400}></canvas>
+                <canvas className="budget-bubble-canvas" ref={bubbleCanvasRef} width={800} height={800}></canvas>
+              )}
+              {budgetData.length === 0 && budgetCapacity.length > 0 && <p>No budget data available.</p>}
+            </div>
+            <div className="chart2">
+              <h3>Actual budget vs Cumulative budget</h3>
+              {budgetData.length > 0 && budgetCapacity.length > 0 && (
+                <canvas className="budget-line-canvas" ref={lineCanvasRef} width={800} height={800}></canvas>
               )}
               {budgetData.length === 0 && budgetCapacity.length > 0 && <p>No budget data available.</p>}
             </div>

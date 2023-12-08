@@ -5,9 +5,11 @@ import Modal from 'react-modal';
 import AddBudget from './AddBudget';
 import BudgetList from './BudgetList';
 import BudgetChart from './BudgetChart';
-import AddBudgetCapacity from '../AddBudgetCapacity';
+import AddBudgetCapacity from './AddBudgetCapacity';
 import { useAuth } from '../Auth/AuthContext';
 import '../../styles/Dashboard.css'; // Import the new CSS file
+import config from '../../config';
+const BASE_URL = config.apiUrl;
 
 const Dashboard = ({ token, username }) => {
   const { logout, refreshAccessToken, checkTokenExpiration } = useAuth();
@@ -97,7 +99,8 @@ const Dashboard = ({ token, username }) => {
   const handleAddBudgetCapacity = async (data) => {
     // Your logic for adding budget capacity
     try {
-      const apiUrl = 'http://localhost:5000/api/budgets/capacity';
+      const apiUrl = BASE_URL+'/api/budgets/capacity';
+      console.log('dashboard apiUrl', apiUrl);
 
       data.username = username;
 
@@ -207,7 +210,7 @@ const Dashboard = ({ token, username }) => {
             <button onClick={handleAddBudgetClick}>Add Budget</button>
           </li>
           <li>
-            <button onClick={handleAddBudgetCapacityClick}>Add Budget Capacity</button>
+            <button onClick={handleAddBudgetCapacityClick}>Configure Budget Capacity</button>
           </li>
         </ul>
       </nav>

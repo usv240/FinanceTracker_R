@@ -5,8 +5,6 @@ import Modal from 'react-modal';
 import authService from '../services/authService';
 import '../../styles/login.css'; // Import the CSS file
 
-
-
 const Login = ({ onLogin }) => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
@@ -26,7 +24,7 @@ const Login = ({ onLogin }) => {
       navigate('/dashboard');
     } catch (error) {
       console.error('Login failed', error);
-      setLoginMessage('Login failed');
+      setLoginMessage('Login failed. Please check your username and password.');
       openModal();
     }
   };
@@ -40,9 +38,6 @@ const Login = ({ onLogin }) => {
   };
 
   return (
-    
-      
-      
     <div className="login-container">
       <h2 className="login-heading">Login</h2>
       <input
@@ -69,11 +64,20 @@ const Login = ({ onLogin }) => {
         onRequestClose={closeModal}
         contentLabel="Login Message"
         className="login-modal"
+        style={{
+          overlay: {
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+          },
+        }}
       >
-        <h2>{loginMessage}</h2>
-        <button className="login-button" onClick={closeModal}>
-          Close
-        </button>
+        <div className="modal-content">
+          <h2>{loginMessage}</h2>
+          <button className="login-button" onClick={closeModal}>
+            Close
+          </button>
+        </div>
       </Modal>
     </div>
   );

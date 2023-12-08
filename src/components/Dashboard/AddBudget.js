@@ -7,7 +7,9 @@ import 'react-toastify/dist/ReactToastify.css';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import '../../styles/AddBudget.css';
+import config from '../../config';
 
+const BASE_URL = config.apiUrl;
 const AddBudget = ({ token }) => {
   const [budgetName, setBudgetName] = useState('');
   const [budgetNumber, setBudgetNumber] = useState('');
@@ -16,7 +18,7 @@ const AddBudget = ({ token }) => {
   const handleAddBudget = async () => {
     try {
       const response = await axios.post(
-        'http://localhost:5000/api/budgets',
+        BASE_URL+'/api/budgets',
         { budgetName, budgetNumber, selectedDate },
         { headers: { Authorization: `Bearer ${token}` } }
       );

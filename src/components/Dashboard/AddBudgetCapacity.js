@@ -1,13 +1,15 @@
 //AddBudgetCapacity.js
 
-
+import config from '../../config';
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Modal from 'react-modal';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import apiService from './services/apiService';
-import '../styles/AddBudgetCapacity.css'; // Import your CSS file
+import apiService from '../services/apiService';
+import '../../styles/AddBudgetCapacity.css'; // Import your CSS file
+
+const BASE_URL = config.apiUrl;
 
 // Define the AddBudgetCapacity component
 const AddBudgetCapacity = ({ onAddBudgetCapacity, username, token }) => {
@@ -34,7 +36,7 @@ const AddBudgetCapacity = ({ onAddBudgetCapacity, username, token }) => {
 
       if (response && response.success) {
         setAddBudgetMessage(response.message);
-        openModal();
+        //openModal();
         // Display success Toastify notification
         toast.success(response.message);
         // Reset form fields after successful submission
@@ -44,14 +46,14 @@ const AddBudgetCapacity = ({ onAddBudgetCapacity, username, token }) => {
       } else {
         console.error('Failed to add budget capacity:', response ? response.message : 'Unknown error');
         setAddBudgetMessage(response ? response.message : 'Failed to add budget capacity');
-        openModal();
+        //openModal();
         // Display error Toastify notification
         toast.error(response ? response.message : 'Failed to add budget capacity');
       }
     } catch (error) {
       console.error('Error adding budget capacity:', error.message);
       setAddBudgetMessage('Error adding budget capacity');
-      openModal();
+      //openModal();
       // Display error Toastify notification
       toast.error('Error adding budget capacity');
     }

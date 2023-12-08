@@ -1,10 +1,11 @@
 import axios from 'axios';
 import authService from '../authService';
+import config from '../../config';
 
 jest.mock('axios');
 
 // Replace 'your_actual_api_url' with the appropriate API URL or define it accordingly
-const API_URL = 'http://localhost:5000/api';
+const API_URL = config.apiUrl+'/api';
 
 describe('authService', () => {
   describe('signup method', () => {

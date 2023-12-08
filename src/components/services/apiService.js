@@ -1,9 +1,10 @@
 //apiService.js
 
 import axios from 'axios';
+import config from '../../config';
 
-const BASE_URL = 'http://localhost:5000/api'; // Replace with your actual backend URL
-
+const BASE_URL =config.apiUrl + '/api'; // Replace with your actual backend URL
+console.log('BASE_URL',BASE_URL);
 const apiService = {
   get: async (endpoint, token, params = {}) => {
     console.log("Inside apiService ", token);
