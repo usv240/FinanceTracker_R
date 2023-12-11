@@ -7,7 +7,7 @@ import BudgetList from './BudgetList';
 import BudgetChart from './BudgetChart';
 import AddBudgetCapacity from './AddBudgetCapacity';
 import { useAuth } from '../Auth/AuthContext';
-import '../../styles/Dashboard.css'; // Import the new CSS file
+import '../../styles/Dashboard.css'; 
 import config from '../../config';
 const BASE_URL = config.apiUrl;
 
@@ -28,30 +28,29 @@ const Dashboard = ({ token, username }) => {
   const handleTokenRefreshConfirmation = () => {
     setShowConfirmationModal(true);
 
-    // After 5 seconds, if the user hasn't made a choice, hide the modal
     setTimeout(() => {
       setShowConfirmationModal(false);
     }, 5000);
   };
 
   const handleConfirmationYes = async () => {
-    // User clicked 'Yes' to refresh token
+
     setIsTokenRefreshed(true);
     setShowConfirmationModal(false);
     try {
       console.log('Refreshing token...');
-      //await handleTokenRefresh();
+
       console.log('Token refreshed successfully. Continuing with the action...');
-      // Perform other actions after token refresh, if needed
+      
     } catch (error) {
       console.error('Error refreshing token:', error);
-      // Handle errors, e.g., redirect to login page
+
       logout();
     }
   };
 
   const handleConfirmationNo = () => {
-    // User clicked 'No' to not refresh token
+    
     setShowConfirmationModal(false);
     window.location.reload();
   };
@@ -97,7 +96,7 @@ const Dashboard = ({ token, username }) => {
   };
 
   const handleAddBudgetCapacity = async (data) => {
-    // Your logic for adding budget capacity
+    
     try {
       const apiUrl = BASE_URL+'/api/budgets/capacity';
       console.log('dashboard apiUrl', apiUrl);
@@ -116,7 +115,6 @@ const Dashboard = ({ token, username }) => {
       console.log('apiUrl', apiUrl);
       console.log('response from dashboard', response);
 
-      // Log headers and request payload for debugging
       console.log('Request Headers:', response.headers);
       console.log('Request Payload:', JSON.stringify(data));
 
@@ -141,26 +139,22 @@ const Dashboard = ({ token, username }) => {
     }
   };
 
-  //const isTokenRefreshedRef = useRef(false);
   useEffect(() => {
-    let isMounted = true; // Flag to track whether the component is mounted
-  
+    let isMounted = true; 
     console.log('Setting up token refresh interval...');
     const tokenRefreshInterval = setInterval(async () => {
       if (!isTokenRefreshed && isMounted) {
         console.log('Token about to expire. Displaying confirmation modal...');
         setShowConfirmationModal(true);
   
-        // After 10 seconds, if the user hasn't made a choice, hide the modal and refresh the page
+       
         setTimeout(async () => {
           if (!isTokenRefreshed && isMounted) {
             setShowConfirmationModal(false);
             try {
               console.log('Refreshing token...');
-              // Replace the following line with the actual token refresh logic
-              // await handleTokenRefresh();
               if (isMounted) {
-                setIsTokenRefreshed(true); // Set the state to true after token refresh
+                setIsTokenRefreshed(true);
                 console.log('Token refreshed successfully.');
                 window.location.reload();
               }
@@ -175,12 +169,11 @@ const Dashboard = ({ token, username }) => {
         }, 10000);
       }
     }, 50000);
-  
-    // Cleanup function
+
     return () => {
       console.log('Clearing token refresh interval...');
       clearInterval(tokenRefreshInterval);
-      isMounted = false; // Set the flag to false when the component unmounts
+      isMounted = false; 
     };
   }, [isTokenRefreshed, logout]);
   
@@ -236,14 +229,11 @@ const Dashboard = ({ token, username }) => {
           </div>
         )}
 
-
-
-      {/* Token Refresh Confirmation Modal */}
       <Modal
         isOpen={showConfirmationModal}
         onRequestClose={handleCloseConfirmationModal}
         contentLabel="Token Refresh Confirmation Modal"
-        className="dashboard-modal" // Apply the class for custom styles
+        className="dashboard-modal" 
       >
         <h2>Your session is about to expire</h2>
         <p>Do you want to refresh your session?</p>

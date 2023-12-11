@@ -40,17 +40,14 @@
     
 }
 
-/* AddBudget.css */
 
-/* Override the default styles for the hover effect on the month */
 .add-budget-form .react-datepicker__month-text.react-datepicker__month--selected:hover,
 .add-budget-form .react-datepicker__month-text.react-datepicker__month--in-range:hover,
 .add-budget-form .react-datepicker__month-text.react-datepicker__month--in-selecting-range:hover {
-  background-color: transparent; /* Set the background color to transparent or your desired color */
-  color: #180909; /* Set the text color to your desired color */
+  background-color: transparent; 
+  color: #180909; 
 }
 
-/* Additional styling for the month container if needed */
+
 .add-budget-form .react-datepicker__month-container {
-  /* Add your styles here */
 }

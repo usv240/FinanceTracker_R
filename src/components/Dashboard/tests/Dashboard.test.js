@@ -10,15 +10,10 @@ jest.mock('../../Auth/AuthContext', () => ({
   }),
 }));
 
-// Mocking AddBudgetCapacity with a default export
 jest.mock('../../AddBudgetCapacity', () => ({
   __esModule: true,
   default: () => <div data-testid="addBudgetCapacityComponent">Add Budget Capacity Component</div>,
 }));
-
-// jest.mock('../AddBudget');
-// jest.mock('../BudgetList');
-// jest.mock('../BudgetChart');
 
 jest.mock('../AddBudget', () => ({
     __esModule: true,

@@ -44,7 +44,7 @@ const BudgetList = ({ token }) => {
     };
 
     fetchBudgets();
-  }, [token, selectedMonth]); // Include dependencies here
+  }, [token, selectedMonth]); 
 
   const handleMonthChange = (event) => {
     setSelectedMonth(event.target.value);

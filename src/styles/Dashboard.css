@@ -24,7 +24,7 @@
 }
 
 .dashboard {
-    margin-top:0%; /* Adjust the margin-top value to your preference */
+    margin-top:0%; 
     background-color: rgb(228, 221, 230);
     padding: 10px;
     box-shadow: 0 4px 8px rgba(245, 242, 242, 0.1);
@@ -100,7 +100,7 @@
     border: 1px solid #ccc;
     border-radius: 8px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-    max-width: 400px; /* Adjust the maximum width as needed */
+    max-width: 400px; 
     width: 100%;
     box-sizing: border-box;
   }

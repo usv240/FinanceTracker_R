@@ -3,7 +3,7 @@
 import axios from 'axios';
 import config from '../../config';
 
-const BASE_URL =config.apiUrl + '/api'; // Replace with your actual backend URL
+const BASE_URL =config.apiUrl + '/api'; 
 console.log('BASE_URL',BASE_URL);
 const apiService = {
   get: async (endpoint, token, params = {}) => {
@@ -13,7 +13,7 @@ const apiService = {
         headers: {
           Authorization: `Bearer ${token}`,
         },
-        params: params, // Include the params property here
+        params: params, 
       });
       return response.data;
     } catch (error) {

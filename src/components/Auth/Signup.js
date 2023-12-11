@@ -10,7 +10,7 @@ const Signup = () => {
 
   useEffect(() => {
     const closeDialog = () => {
-      // Reset signup status after a delay
+      
       setTimeout(() => setSignupStatus(null), 2000);
     };
 

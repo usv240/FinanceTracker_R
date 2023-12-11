@@ -6,12 +6,12 @@
   align-items: center;
   max-width: 1300px;
   max-height: 1000px;
-  margin: 500px auto 0; /* Add top margin to position below another default element */
+  margin: 500px auto 0; 
   text-align: center;
 }
 
 .label-container {
-  margin-bottom: 20px; /* Add some spacing between label and charts */
+  margin-bottom: 20px; 
 }
 
 .budget-chart select {
@@ -21,16 +21,16 @@
 .chart {
   flex: 1;
   text-align: center;
-  width: 50%; /* Adjust the width as needed */
+  width: 50%; 
   height: 80%;
-  margin-bottom: 20px; /* Add margin between charts */
+  margin-bottom: 20px; 
 }
 
 .chart2 {
   flex: 2;
   text-align: center;
-  width: 50%; /* Adjust the width as needed */
-  height: 300%; /* Adjust the height as needed */
+  width: 50%; 
+  height: 300%; 
 }
 
 .charts-container {
@@ -38,26 +38,26 @@
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
-  gap: 20px; /* Adjust the gap between charts */
+  gap: 20px; 
 }
 
 .budget-canvas,
 .budget-pie-canvas,
 .budget-scatter-canvas,
 .budget-bubble-canvas {
-  max-width: 800px; /* Set a maximum width for the charts */
+  max-width: 800px; 
   width: 100%;
-  height: auto; /* Auto height for responsiveness */
-  margin-bottom: 20px; /* Add margin between charts */
+  height: auto; 
+  margin-bottom: 20px; 
 }
 
 @media (min-width:700px) {
   .charts-container {
-    flex-direction: row; /* Display charts in a row for larger screens */
+    flex-direction: row; 
   }
 
   .chart,
   .chart2 {
-    flex: 1; /* Equal width for larger screens */
+    flex: 1; 
   }
 }

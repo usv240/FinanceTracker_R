@@ -4,7 +4,6 @@ import config from '../../config';
 
 jest.mock('axios');
 
-// Replace 'your_actual_api_url' with the appropriate API URL or define it accordingly
 const API_URL = config.apiUrl+'/api';
 
 describe('authService', () => {
@@ -81,7 +80,7 @@ describe('authService', () => {
 
   describe('checkTokenExpiration method', () => {
     it('should correctly check if the token is expired', () => {
-      const expirationTime = Math.floor(Date.now() / 1000) - 50; // 50 seconds ago
+      const expirationTime = Math.floor(Date.now() / 1000) - 50; 
 
       const isTokenExpired = authService.checkTokenExpiration(expirationTime);
 

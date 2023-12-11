@@ -12,7 +12,6 @@ import BudgetChart from './components/Dashboard/BudgetChart';
 import ConfigureBudget from './components/Dashboard/ConfigureBudget';
 import AddBudget from './components/Dashboard/AddBudget';
 import authService from './components/services/authService';
-//import TokenRefreshModal from './components/TokenRefreshHandler';
 import './styles/style.css';
 
 const Home = () => {
@@ -37,7 +36,6 @@ const App = () => {
   const [token, setToken] = useState(null);
   const [isTokenRefreshModalOpen, setTokenRefreshModalOpen] = useState(false);
 
-  // Function to set login status
   const handleLogin = (token) => {
     setToken(token);
     setIsLoggedIn(true);
@@ -46,7 +44,6 @@ const App = () => {
   useEffect(() => {
     const checkTokenExpiration = async () => {
       if (authService.checkTokenExpiration()) {
-        // Token is about to expire, show the modal
         setTokenRefreshModalOpen(true);
       }
     };
@@ -56,9 +53,9 @@ const App = () => {
 
   const handleRefreshToken = async () => {
     try {
-      // Call the refresh token function from authService
+
       await authService.refreshAccessToken();
-      // Close the modal after refreshing the token
+
       setTokenRefreshModalOpen(false);
     } catch (error) {
       console.error('Error refreshing token:', error);

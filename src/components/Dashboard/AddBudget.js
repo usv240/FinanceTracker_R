@@ -24,8 +24,7 @@ const AddBudget = ({ token }) => {
       );
   
       console.log(response.data);
-  
-      // Show success notification
+
       toast.success('Budget added successfully', {
         position: 'top-right',
         autoClose: 3000,
@@ -35,18 +34,16 @@ const AddBudget = ({ token }) => {
         draggable: true,
         progress: undefined,
       });
-  
-      // Clear input fields
+
       setBudgetName('');
       setBudgetNumber('');
-      // Reset date to the current date
+
       setSelectedDate(new Date());
     } catch (error) {
       const errorMessage = error.response?.data?.message || 'An error occurred';
   
       console.error('Error adding budget:', errorMessage);
-  
-      // Show error notification
+
       toast.error(`Error: ${errorMessage}`, {
         position: 'top-right',
         autoClose: 5000,
@@ -89,7 +86,6 @@ const AddBudget = ({ token }) => {
       </label>
       <button onClick={handleAddBudget}>Add Budget</button>
 
-      {/* ToastContainer for displaying notifications */}
       <ToastContainer />
     </div>
   );

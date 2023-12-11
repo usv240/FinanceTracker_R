@@ -3,7 +3,7 @@ import apiService from '../apiService';
 import config from '../../config';
 
 jest.mock('axios');
-const BASE_URL = config.apiUrl+'/api'; // Replace with your actual backend URL
+const BASE_URL = config.apiUrl+'/api'; 
 
 
 describe('apiService', () => {
@@ -25,7 +25,6 @@ describe('apiService', () => {
           Authorization: `Bearer ${token}`,
         },
         params: {
-          // Include any additional params here
         },
       });
       

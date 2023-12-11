@@ -9,7 +9,7 @@ const TokenRefreshHandler = ({ isOpen, onConfirmationYes, onConfirmationNo, onRe
       isOpen={isOpen}
       onRequestClose={onRequestClose}
       contentLabel="Token Refresh Confirmation Modal"
-      className="dashboard-modal" // Apply the class for custom styles
+      className="dashboard-modal" 
     >
       <h2>Your session is about to expire</h2>
       <p>Do you want to refresh your session?</p>
