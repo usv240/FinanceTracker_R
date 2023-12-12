@@ -3,7 +3,7 @@ import React from 'react';
 import { BrowserRouter } from 'react-router-dom';
 import { render, fireEvent, waitFor, screen } from '@testing-library/react';
 
-import Login from '../Login';
+import Login from '../logingin';
 
 describe('Login Component', () => {
   test('renders login form', () => {

@@ -20,7 +20,7 @@ const Home = () => {
       <h1 className="welcome-message">Welcome to the Budget App</h1>
       <h2>Your personalized budget management solution.</h2>
       <div className="home-button-container">
-        <Link to="/login" className="home-button">
+        <Link to="/logingin" className="home-button">
           Login
         </Link>
         <Link to="/signup" className="home-button">
@@ -68,11 +68,11 @@ const App = () => {
       <AuthProvider>
         <Routes>
           <Route path="/" element={<Home />} />
-          <Route path="/login" element={<Login onLogin={handleLogin} />} />
+          <Route path="/logingin" element={<Login onLogin={handleLogin} />} />
           <Route path="/signup" element={<Signup />} />
           <Route
             path="/dashboard"
-            element={isLoggedIn ? <Dashboard token={token} /> : <Navigate to="/login" />}
+            element={isLoggedIn ? <Dashboard token={token} /> : <Navigate to="/logingin" />}
           />
           {isLoggedIn && (
             <>

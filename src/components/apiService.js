@@ -1,7 +1,7 @@
 //apiService.js
 
 import axios from 'axios';
-import config from '../../config';
+import config from '../config';
 
 const BASE_URL =config.apiUrl + '/api'; 
 console.log('BASE_URL',BASE_URL);

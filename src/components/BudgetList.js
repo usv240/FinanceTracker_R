@@ -1,7 +1,7 @@
 // BudgetList.js
 
 import React, { useState, useEffect } from 'react';
-import apiService from '../services/apiService';
+import apiService from './apiService';
 import '../../styles/BudgetList.css';
 
 const BudgetList = ({ token }) => {

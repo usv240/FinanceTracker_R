@@ -8,7 +8,7 @@ import BudgetChart from './BudgetChart';
 import AddBudgetCapacity from './AddBudgetCapacity';
 import { useAuth } from '../Auth/AuthContext';
 import '../../styles/Dashboard.css'; 
-import config from '../../config';
+import config from '../config';
 const BASE_URL = config.apiUrl;
 
 const Dashboard = ({ token, username }) => {
@@ -166,9 +166,9 @@ const Dashboard = ({ token, username }) => {
           } else {
             setShowConfirmationModal(false);
           }
-        }, 10000);
+        }, 20000);
       }
-    }, 50000);
+    }, 40000);
 
     return () => {
       console.log('Clearing token refresh interval...');

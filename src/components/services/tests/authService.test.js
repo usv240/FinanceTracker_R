@@ -38,7 +38,7 @@ describe('authService', () => {
 
       const token = await authService.login(username, password);
 
-      expect(axios.post).toHaveBeenCalledWith(`${API_URL}/auth/login`, {
+      expect(axios.post).toHaveBeenCalledWith(`${API_URL}/auth/logingin`, {
         username,
         password,
       });

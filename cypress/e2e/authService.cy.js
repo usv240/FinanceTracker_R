@@ -4,7 +4,7 @@ import 'cypress-eyes';
 describe('authService', () => {
   // E2E: Test user signup
   it('should sign up a new user using authService.signup', () => {
-    cy.intercept('POST', 'http://localhost:5000/api/auth/register').as('signupRequest');
+    cy.intercept('POST', 'http://localhost:5000/api/auth/registering').as('signupRequest');
     cy.window().then((win) => {
       return win.authService.signup('testUser', 'testPassword', 'Test User');
     });
@@ -17,7 +17,7 @@ describe('authService', () => {
 
   it('should log in a user using authService.login', () => {
  
-    cy.intercept('POST', 'http://localhost:5000/api/auth/login').as('loginRequest');
+    cy.intercept('POST', 'http://localhost:5000/api/auth/logingin').as('loginRequest');
     cy.window().then((win) => {
       return win.authService.login('testUser', 'testPassword');
     });

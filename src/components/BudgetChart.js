@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 import Chart from 'chart.js/auto';
-import apiService from '../services/apiService';
+import apiService from './apiService';
 import '../../styles/BudgetChart.css';
 
 const BudgetChart = ({ token }) => {

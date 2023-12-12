@@ -2,8 +2,8 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Modal from 'react-modal';
-import authService from '../services/authService';
-import '../../styles/login.css'; // Import the CSS file
+import authService from './authService';
+import '../../styles/login.css'; 
 
 const Login = ({ onLogin }) => {
   const [username, setUsername] = useState('');
@@ -15,8 +15,6 @@ const Login = ({ onLogin }) => {
   const handleLogin = async () => {
     try {
       const token = await authService.login(username, password);
-
-      // Pass the token and username to the onLogin callback
       onLogin(token, username);
 
       setLoginMessage('Login successful');
@@ -58,7 +56,6 @@ const Login = ({ onLogin }) => {
         Login
       </button>
 
-      {/* Modal for displaying login message */}
       <Modal
         isOpen={isModalOpen}
         onRequestClose={closeModal}

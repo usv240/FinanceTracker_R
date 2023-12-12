@@ -1,12 +1,12 @@
 //AddBudgetCapacity.js
 
-import config from '../../config';
+import config from '../config';
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Modal from 'react-modal';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import apiService from '../services/apiService';
+import apiService from './apiService';
 import '../../styles/AddBudgetCapacity.css'; 
 
 const BASE_URL = config.apiUrl;

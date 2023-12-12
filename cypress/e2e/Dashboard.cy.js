@@ -39,6 +39,6 @@ describe('Dashboard', () => {
     cy.visit('/dashboard'); 
 
     cy.get('.logout-button').click();
-    cy.url().should('include', '/login'); 
+    cy.url().should('include', '/logingin'); 
   });
 });

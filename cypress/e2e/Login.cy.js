@@ -6,7 +6,7 @@ Cypress.eyesOpen('personalbudget', 'Login Tests');
 
 describe('Login', () => {
   beforeEach(() => {
-    cy.visit('/login'); 
+    cy.visit('/logingin'); 
   });
 
   it('should login successfully (E2E)', () => {

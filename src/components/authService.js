@@ -1,13 +1,12 @@
 //authService.js
-
 import axios from 'axios';
-import config from '../../config';
+import config from '../config';
 const API_URL = config.apiUrl;
 
 const authService = {
   signup: async (username, password, fullName) => {
     try {
-      const response = await axios.post(`${API_URL}/api/auth/register`, {
+      const response = await axios.post(`${API_URL}/api/auth/registering`, {
         fullName,
         username,
         password,
@@ -21,7 +20,7 @@ const authService = {
 
   login: async (username, password) => {
     try {
-      const response = await axios.post(`${API_URL}/api/auth/login`, {
+      const response = await axios.post(`${API_URL}/api/auth/logingin`, {
         username,
         password,
       });

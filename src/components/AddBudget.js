@@ -7,7 +7,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import '../../styles/AddBudget.css';
-import config from '../../config';
+import config from '../config';
 
 const BASE_URL = config.apiUrl;
 const AddBudget = ({ token }) => {
